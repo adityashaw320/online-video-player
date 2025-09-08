@@ -80,11 +80,11 @@ const registerUser = asyncHandeller( async (req, res)=>{
         coverImage: coverImage.url || "",
         email, 
         password,
-        username: username.toLowerCase
+        username: username.toLowerCase()
     })
 
-    const createdUser = await user.findOne(user._id).select(
-        "-password, -refreshToken"
+    const createdUser = await User.findById(user._id).select(
+        "-password -refreshToken"
     )
 
     if (!createdUser) {
@@ -104,11 +104,12 @@ const registerUser = asyncHandeller( async (req, res)=>{
         //password check
         //access token, refresh token
         //send cookies
-        const { username, email, password} = req.body
+         const {email, username, password} = req.body
+            console.log(email);
 
-        if (!username || !email) {
-            throw new ApiError(400, "All fields are required")
-        }
+         if (!username && !email) {
+        throw new ApiError(400, "username or email is required")
+    }
 
         const user = await User.findOne({
             $or: [{ username }, { email }]
@@ -126,7 +127,7 @@ const registerUser = asyncHandeller( async (req, res)=>{
         
         const {accessToken, refreshToken} = await generateAccessTokenAndRefreshToken(user._id)
 
-        const logedInUser = await user.findById(user._id).select("-password -refreshToken")
+        const logedInUser = await User.findById(user._id).select("-password -refreshToken")
 
         const options = {
             httpOnly: true,
