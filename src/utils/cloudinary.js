@@ -16,8 +16,10 @@ try {
         resource_type: "auto"
     })
     //file has  been uploaded succesfully
-    console.log(response.url, "file is uploaded on cloudinary");
-    return response
+   // console.log(response.url, "file is uploaded on cloudinary");
+    fs.unlinkSync(localFilePath)
+    return response;
+    
 } catch (error) {
     fs.unlinkSync(localFilePath)//remove the locally saved temporery file as the operation gor failed
     return null
