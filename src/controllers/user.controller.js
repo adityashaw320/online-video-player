@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
 
 
+
 const generateAccessTokenAndRefreshToken = async(userId)=>
 {
     try {
@@ -156,9 +157,9 @@ const registerUser = asyncHandeller( async (req, res)=>{
        await User.findByIdAndUpdate(
             req.user._id,
             {
-                $set: 
+                $unset: 
                 {
-                  refreshToken: undefined,
+                  refreshToken: 1,
                 }
             },
             {
@@ -180,7 +181,7 @@ const registerUser = asyncHandeller( async (req, res)=>{
 
     const refeshAccessToken = asyncHandeller(async (req, res)=>{
 
-      const incomingRfreshToken =  req.cookie.refreshToken  || req.body.refreshToken
+      const incomingRfreshToken =  req.cookies?.refreshToken  || req.body.refreshToken
       if (!incomingRfreshToken) {
         throw new ApiError(401, 'Unauthorized reques')
       }
